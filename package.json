@@ -1,0 +1,20 @@
+{
+  "name": "filter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsx ./index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "millify": "^6.1.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.16.5"
+  }
+}
