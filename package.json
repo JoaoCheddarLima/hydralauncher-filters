@@ -15,6 +15,7 @@
     "millify": "^6.1.0"
   },
   "devDependencies": {
-    "tsx": "^4.16.5"
+    "tsx": "^4.16.5",
+    "typescript": "^5.5.4"
   }
 }
