@@ -1,8 +1,13 @@
-export interface CrackGameInterfaces {
+export interface GameInterfaces {
     title: string
     uris: string[]
     uploadDate: Date
     fileSize: string
+}
+
+export interface CachedGamesData {
+    cachedAt: number
+    games: GameInterfaces[]
 }
 
 export interface ParsedGame {
@@ -17,10 +22,10 @@ export interface WrittenGameList {
 
 export interface HydraLinksResponse {
     name: string,
-    downloads: CrackGameInterfaces[]
+    downloads: GameInterfaces[]
 }
 
 export interface GameMapMemory {
     timestamp: Date,
-    game: CrackGameInterfaces
+    game: GameInterfaces
 }
