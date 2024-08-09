@@ -2,6 +2,7 @@ import {
   readFileSync,
   writeFileSync,
 } from 'fs';
+import ms from 'pretty-ms';
 
 import {
   CachedGamesData,
@@ -26,12 +27,12 @@ export function saveDataLocally(data: GameInterfaces[]) {
 }
 
 export function filterGames(allGames: GameInterfaces[], filter: string) {
-    return allGames.filter(game => game.title.toLowerCase().includes(filter))
+    return allGames.filter(game => game.title.toLowerCase().includes(filter.toLowerCase()))
 }
 
 export function readDataLocally(): CachedGamesData | null {
     let cacheUpdateTime = 1000 * 60 * 60 * 2 // 2 hours
-    
+
     const now = Date.now()
     try {
         const cachedData: CachedGamesData = JSON.parse(readFileSync('./cache/links.json').toString())
@@ -40,6 +41,8 @@ export function readDataLocally(): CachedGamesData | null {
         if (now - cachedAt > cacheUpdateTime) {
             throw new Error("Cache outdated")
         }
+
+        write(`✅ Cache last updated: ${ms(now - cachedAt)} ago`)
 
         return cachedData
     } catch (err) {
@@ -114,7 +117,6 @@ export function parseAndSaveData({
     const savePath = `./filters/${filter!.split(" ").join("-") + "_games.json"}`
 
     writeFileSync(savePath, JSON.stringify(writtenGames, null, 4))
-    saveDataLocally(allGames)
 
     labels.end(filteredGames.length, allGames.length, filter!)
     labels.savedAt(savePath)

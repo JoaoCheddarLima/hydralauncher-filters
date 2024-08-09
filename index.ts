@@ -1,19 +1,17 @@
 import 'dotenv/config';
 
+import { scrapeHydra } from './scrapers/hydralinks';
 import {
   GameInterfaces,
   GameMapMemory,
-  HydraLinksResponse,
   ParsedGame,
 } from './types';
 import {
-  extractGameJsonLinks,
   filterGames,
   parseAndSaveData,
   readDataLocally,
   write,
 } from './utils';
-import { labels } from './utils/logging';
 
 const {
     FILTER: filter,
@@ -25,7 +23,7 @@ if (!filter || !baseUrl) {
     process.exit(1)
 }
 
-write(`🔍 Searching for games that match the filter: ${filter}`)
+write(`🔍 Searching for games that match the filter: "${filter}"`)
 
 function validateFilteredGames({
     filteredGames,
@@ -101,27 +99,16 @@ async function main() {
         })
     }
 
-    const website = await (await fetch(baseUrl!)).text()
+    const scrapedGames = await scrapeHydra()
 
-    const linkList = extractGameJsonLinks(website)
+    if (!scrapedGames) {
+        write("❌ No games found")
+        process.exit(1)
+    }
 
-    let i = 0
-
-    linkList.forEach(async link => {
-        const url = baseUrl + "/" + link
-        const data: HydraLinksResponse = await (await fetch(url)).json()
-
-        if (!data.downloads.length) return labels.noDownloads(url)
-
-        allGames = allGames.concat(data.downloads)
-
-        i++
-        labels.processed(url, i, linkList.length)
-
-        if (i == linkList.length) validateFilteredGames({
-            filteredGames: filterGames(allGames, filter!),
-            allGames
-        })
+    validateFilteredGames({
+        filteredGames: filterGames(scrapedGames, filter!),
+        allGames: scrapedGames
     })
 }
 main()
